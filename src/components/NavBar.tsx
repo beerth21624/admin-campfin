@@ -1,5 +1,7 @@
 
-import { Avatar, Navbar } from 'flowbite-react';
+import { RedirectToSignIn, SignedIn, SignedOut, UserButton } from "@clerk/clerk-react";
+import { Navbar } from 'flowbite-react';
+
 
 
 
@@ -12,8 +14,12 @@ function NavBar() {
 
     <div className="flex items-center justify-end w-full">
       <div className="flex items-center gap-4">
-          <Avatar size="md" img="images/profileImage.png" rounded />
-        <span className="">Admin</span>
+          <SignedOut>
+            <RedirectToSignIn />
+          </SignedOut>
+          <SignedIn>
+            <UserButton />
+          </SignedIn>
       </div>
     </div>
     </Navbar>

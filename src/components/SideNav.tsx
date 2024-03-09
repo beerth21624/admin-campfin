@@ -6,9 +6,12 @@ import {
   HiLocationMarker,
   HiShoppingCart,
   HiStar,
-  HiTable,
-  HiUser,
+  HiUser
 } from "react-icons/hi";
+import Swal from "sweetalert2";
+
+import { isLoggedIn } from "../utils/checkLogin";
+
 
 
 const theme: CustomFlowbiteTheme["sidebar"] = {
@@ -31,9 +34,18 @@ const SideNav = () => {
   const location = window.location.pathname;
   const path = location.split("/")[1];
 
-  console.log(location);
 
-
+  const loginWithGoogle = async() => {
+    try {
+      window.open(process.env.BASE_URL+'/auth/google', "_self"); 
+    }catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Something went wrong!",
+      });
+    }
+  }
 
   return (
     <Sidebar aria-keyshortcuts="" theme={theme}>
@@ -49,6 +61,8 @@ const SideNav = () => {
       <Sidebar.Items>
         <Sidebar.ItemGroup>
           {/* //logo */}
+          {isLoggedIn() ? (
+            <>
           <Sidebar.Item href="/" icon={HiColorSwatch}
             active={path === "" ? true : false}
           >
@@ -76,12 +90,44 @@ const SideNav = () => {
           >
             จัดการสินค้า
           </Sidebar.Item>
-          <Sidebar.Item href="#" icon={HiArrowSmRight}>
+          {/* //login */}
+          <Sidebar.Item href="#" icon={HiArrowSmRight}
+            onClick={() => {
+           //confirm
+           Swal.fire({
+            title: 'ออกจากระบบ',
+             text: "คุณต้องการออกจากระบบหรือไม่?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ECB100',
+            cancelButtonColor: '#676767',
+            confirmButtonText: 'ใช่',
+            cancelButtonText: 'ยกเลิก'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              localStorage.removeItem("token");
+              window.location.href = "/non-login";
+            }
+          }
+          );
+
+            }}
+          
+          >
+            Sign Out
+          </Sidebar.Item>
+
+            </>
+          ) : (
+            <>
+          <Sidebar.Item href="#" icon={HiArrowSmRight}
+            onClick={loginWithGoogle}
+          >
             Sign In
           </Sidebar.Item>
-          <Sidebar.Item href="#" icon={HiTable}>
-            Sign Up
-          </Sidebar.Item>
+            </>
+          )}
+     
         </Sidebar.ItemGroup>
       </Sidebar.Items>
     </Sidebar>
